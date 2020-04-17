@@ -1,0 +1,279 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+<!DOCTYPE html>
+<html>
+{% block title %}
+SM2KG
+{% endblock %}
+
+{% block content %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('static', filename='styles/giturlstyle.css')}}">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
+{% endblock %}
+
+
+
+<nav class="navbar navbar-default navbar-expand-lg navheader">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/index" style="background-color: #fed600;">Home</a></li>
+      </ul>
+        <span class="navbar-text">
+		<div class="header-logo">S o M E F</div>
+  		</span>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/about">About</a></li>
+        <li><a href="/help">Help</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container">
+
+
+<a href="https://www.isi.edu/">
+	<img src="/static/images/KnowledgeGraph.png" alt="KnowledgeGraph" height="45%" width="45%" class="center">
+</a>
+
+
+<form action="" method="post" novalidate>
+	{{ form.hidden_tag() }}
+	<h1>
+		<div class="formcontainer">
+			<div class = "row">
+				<div class="col-sm-10 no padding">
+					<div class = form-group>
+						{{ wtf.form_field(form.giturl, extra_classes=test, placeholder='Enter Github URL') }}
+					</div>
+				</div>
+				<div class="col-sm-2 nopadding">
+					<br>
+					{{wtf.form_field(form.submit, button_map={'submit':'primary'})}}
+					<button type="button" class="btn btn-default btn-sm btn-space button-cog" data-toggle="modal" data-target="#exampleModal">
+						<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+					</button>
+
+					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+					    		<div class="modal-header">
+					        		<h4 class="modal-title" id="exampleModalLabel">Settings</h4>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							        	<span aria-hidden="true">&times;</span>
+							        </button>
+					    		</div>
+							    <div class="modal-body">
+									<div class = form-group>
+										{{ wtf.form_field(form.threshold)}}
+									</div>
+							    </div>
+							    <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							        <button type="button" data-toggle="collapse" data-target="#savedChanges" class="btn btn-primary">Save changes</button>
+							        <div id="savedChanges" class="collapse fade-out">Saved Changes</div>
+							    </div>
+							</div>
+						</div>
+					</div>
+
+			  	</div>
+			</div>
+		</div>		
+		<p>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li style = "font-size: 12px; color: red;">{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		{% endwith %}
+		</p>
+	</div>
+	</h1>
+</form>
+
+{% if not showDownload %}
+	{% include 'giturl_class/intro_text.html' %}
+{% endif %}
+{% if showDownload %}
+<div class="panel panel-default">
+  <div class="panel-body">
+
+	<!-- display git name -->
+	{% if git_name and showDownload %}
+		<p class="gitdata-header"> {{ git_name }}</p>
+	{% endif %}
+	{% if not git_name and showDownload %}
+		<p class="gitdata-header">No Repo Name Found</p>
+	{% endif %}
+
+	<!-- display git owner -->
+	{% if git_owner and showDownload %}
+	<p class="gitdata-owner">Owned by <a href="https://github.com/{{ git_owner }}">{{ git_owner }}</a></p>
+	{% endif %}
+	{% if not git_owner and showDownload %}
+		<p class="gitdata-owner">No Owner Found</p>
+	{% endif %}
+
+	<div class="gitdata-fetchdata">
+		<div class="gitdata-fetchdataleft">
+			{% if git_license %}
+			<p> License: {{ git_license['name'] }}, <a href="{{ git_license['url'] }}"></a> </p>
+			{% endif %}
+
+			{% if git_forks_url %}
+			<p> Forks Url: <a href="{{ git_forks_url }}">{{ git_forks_url }}</a></p>
+			{% endif %}
+		</div>
+		<div class="gitdata-fetchdataright">
+			{% if git_topics %}
+				<p>Topics: 
+				{% for i in git_topics %}
+					{{ i }}
+				{% endfor %}
+				</p>
+			{% endif %}
+			{%if git_languages %}
+				<p>Languages: 
+				{% for i in git_languages %}
+					{{ i }}
+				{% endfor %}
+			{% endif %}
+			</p>
+			{% if git_readme_url %}
+			<p> README Url: <a href="{{ git_readme_url }}">{{ git_readme_url }}</a></p>
+			{% endif %}
+		</div>
+	</div>
+</div>
+	<p class="gitdata-download"> {{ downloadForm.submit_download(class="btn btn-light") }}</p>
+</div>
+<br/>
+<br/>
+{% endif %}
+
+
+{% if showDownload %}
+
+		<ul class="nav nav-pills gitdata">
+		  {% if description %}
+		  	<li class="active"><a data-toggle="tab" href="#home">Description</a></li>
+		  {% endif %}
+		  {% if installation %} 
+		  	<li><a data-toggle="tab" href="#menu1">Installation</a></li>
+		  {% endif %}
+		  {% if invocation %}
+		  	<li><a data-toggle="tab" href="#menu2">Invocation</a></li>
+		  {% endif %}
+		  {% if citation %}
+		  	<li><a data-toggle="tab" href="#menu3">Citation</a></li>
+		  {% endif %}
+		 
+		  <li><a data-toggle="tab" href="#menu4">Download</a></li>	
+		</ul>
+
+
+
+	<div class="tab-content">
+	  <div id="home" class="tab-pane fade in active">
+		<div class="panel panel-primary">
+		  <!-- Default panel contents -->
+				<div class="panel-body fixed-panel">
+					<div class="well">
+					{% set color_ns = namespace(color='block_color_one') %}
+					{% for i in description %}
+						<p class = '{{ color_ns.color }}'> {{ i }} </p>
+						{% if color_ns.color == 'block_color_two' %}
+							{% set color_ns.color = 'block_color_one' %}
+						{% elif color_ns.color == 'block_color_one' %}
+							{% set color_ns.color = 'block_color_two' %}
+						{% endif %}
+<!--
+						<li class = "list-group-item">{{i}}
+							<div class="custom-control custom-checkbox">
+							    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+							    <label class="custom-control-label" for="defaultUnchecked"></label>
+							</div>
+						</li>
+-->
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	  </div>
+	  {% if installation %}
+	  <div id="menu1" class="tab-pane fade">
+		<div class="panel panel-primary">
+		  <!-- Default panel contents -->
+			<div class="panel-body fixed-panel">
+				<div class="well">
+
+				{% for i in installation %}
+					<li class = "list-group-item">{{i}}
+						<div class="custom-control custom-checkbox">
+						    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+						    <label class="custom-control-label" for="defaultUnchecked"></label>
+						</div>
+					</li>
+				{% endfor %}
+				</div>
+			</div>
+		</div>
+	  </div>
+	  {% endif %}
+	  <div id="menu2" class="tab-pane fade">
+		<div class="panel panel-primary">
+		  <!-- Default panel contents -->
+				<div class="panel-body fixed-panel">
+					<div class="well">
+					{% for i in invocation %}
+						<li class = "list-group-item">{{i}}
+							<div class="custom-control custom-checkbox">
+							    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+							    <label class="custom-control-label" for="defaultUnchecked"></label>
+							</div>
+						</li>
+					{% endfor %}
+					</div>
+			  </div>
+		</div>
+	  </div>
+	    <div id="menu3" class="tab-pane fade">
+		<div class="panel panel-primary">
+		  <!-- Default panel contents -->
+		  <div class="panel-body fixed-panel" >
+			<div class="well">
+			    {% for i in citation %}
+					<li class = "list-group-item">{{i}}
+						<div class="custom-control custom-checkbox">
+						    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+						    <label class="custom-control-label" for="defaultUnchecked"></label>
+						</div>
+					</li>
+			    {% endfor %}
+			</div>
+		  </div>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+</div>
+{% endblock %}
+</html>
+
