@@ -26,6 +26,13 @@ headerClassNames = [
         "forks_url",
         "readme_url"
 ]
+#class names in json to be added to body of metadata section, similar to headerClassNames
+bodyClassNames = [
+        "citation",
+        "installation",
+        "invocation",
+        "description"
+]
 
 #this is a defaultHeaderClassBreak value, could change it for different formatting
 headerClassBreak = int(len(headerClassNames)/2)
@@ -39,17 +46,23 @@ def arrayToStr(arrayToCon):
     return returnStr
 
 #checks if string starts with https:
-def isURL(urlString):
-    print("bla bla")
-    print(type(urlString))
-    if(not(type(urlString is str))):
-            print("sdf")
+def isURL(urlString): 
+    if(not(type(urlString is str))): 
             return False
-    elif(len(urlString) < 6): 
-            print("hal")
+    elif(len(urlString) < 6):  
             return False
     print(urlString[0:6])
     return urlString[0:6] == "https:"
+
+def getAvgOfArr(numArray):
+    avg = 0
+    numOfNums = 0
+    for i in numArray:
+        avg += i
+        numOfNums += 1
+
+    return avg/numOfNums
+
 
 
 @bp.route('/index', methods = ['GET', 'POST'])
@@ -65,15 +78,8 @@ def urlPage():
     showDownload = None
     git_name = None
     git_owner = None
-    git_topics = None
-    git_languages = None
-    git_license = None
-    git_forks_url = None
-    git_topics = []
-    git_languages = []
-    git_readme_url = None
-
     headerClassesToPass = []
+    bodyClassesToPass = []
 
 
     
@@ -84,37 +90,36 @@ def urlPage():
         #flash("Download")
         
     if urlForm.validate_on_submit() and urlForm.submit.data:
-        #flash("Classifying data")
-
+       
+        #page only shows json data if showDownload is True. Sets to true if json file generated or test file env var set(would be nice to be able to set test file)
         showDownload = True
         try: 
             cli.run_cli(urlForm.giturl.data, .8, 'data/output.json')
         except: 
-            print("Error") 
+            print("Error generating json") 
             flash("There must be a problem with your link")
             showDownload = False 
         inputFile = 'data/output.json'
         if(USE_TEST_FILE):
             inputFile = 'data/test.json'
             showDownload = True
+
         with open(inputFile) as json_file:
             data = json.load(json_file)
-            for i in data['citation']:
-                if type(i) is dict:
-                    citation_list.append(i['excerpt'])
-            for i in data['installation']:
-                if type(i) is dict:
-                    installation_list.append(i['excerpt'])
-            for i in data['invocation']:
-                if type(i) is dict:
-                    invocation_list.append(i['excerpt'])
-            
-            for i in data['description']:  
-                if type(i) is dict:
-                    description_list.append(i['excerpt'])
-                else:
-                    description_list.append(i)
+            storedData = data
 
+            for i in bodyClassNames:
+                classData = []
+                for j in data[i]:
+
+                    j["confidencAvg"] = getAvgOfArr(j["confidence"])
+                    classData.append(j)
+
+                tempDict = {"className" : i,
+                    "metadata" : classData }
+                bodyClassesToPass.append(tempDict)
+            
+            print(bodyClassesToPass) 
             for i in headerClassNames:
                 #if excerpt is a list, converts it to string for display 
                 if(type(data[i]["excerpt"]) is list):
@@ -129,7 +134,7 @@ def urlPage():
                 headerClassesToPass.append(tempDict)
 
                
-            #two headerClasses that take special formating, could be passed in as special params but eh 
+            #two headerClasses that take special formating, could be passed in as special params but eh, ima lazy boy
             git_name = data["name"]["excerpt"]
             git_owner = data["owner"]["excerpt"]
                     
@@ -144,6 +149,7 @@ def urlPage():
                            description = description_list,
                            headerClasses = headerClassesToPass,
                            headerClassBreak = headerClassBreak,
+                           bodyClasses = bodyClassesToPass,
                            git_name = git_name,
                            git_owner = git_owner)
 

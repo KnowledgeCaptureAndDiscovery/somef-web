@@ -162,28 +162,17 @@ SM2KG
 {% if showDownload %}
 
 		<ul class="nav nav-pills gitdata">
-		  {% if description %}
-		  	<li class="active"><a data-toggle="tab" href="#home">Description</a></li>
-		  {% endif %}
-		  {% if installation %} 
-		  	<li><a data-toggle="tab" href="#menu1">Installation</a></li>
-		  {% endif %}
-		  {% if invocation %}
-		  	<li><a data-toggle="tab" href="#menu2">Invocation</a></li>
-		  {% endif %}
-		  {% if citation %}
-		  	<li><a data-toggle="tab" href="#menu3">Citation</a></li>
-		  {% endif %}
-		 
+		  {% for i in range(bodyClasses| length) %}
+		    <li class="active"><a data-toggle="tab" href="#menu{{i + 1}}">{{bodyClasses[i]['className']}}</a></li>
+		  {% endfor %}
 		  <li><a data-toggle="tab" href="#menu4">Download</a></li>	
 		</ul>
 
-
+<!--
 
 	<div class="tab-content">
 	  <div id="home" class="tab-pane fade in active">
 		<div class="panel panel-primary">
-		  <!-- Default panel contents -->
 				<div class="panel-body fixed-panel">
 					<div class="well">
 					{% set color_ns = namespace(color='block_color_one') %}
@@ -194,28 +183,31 @@ SM2KG
 						{% elif color_ns.color == 'block_color_one' %}
 							{% set color_ns.color = 'block_color_two' %}
 						{% endif %}
-<!--
+
 						<li class = "list-group-item">{{i}}
 							<div class="custom-control custom-checkbox">
 							    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
 							    <label class="custom-control-label" for="defaultUnchecked"></label>
 							</div>
 						</li>
--->
+
 					{% endfor %}
 				</div>
 			</div>
 		</div>
 	  </div>
-	  {% if installation %}
-	  <div id="menu1" class="tab-pane fade">
+-->
+	  <div class="tab-content">
+	  {% for i in range(bodyClasses| length) %}
+	  	<div id="menu{{i + 1}}" class="tab-pane fade">
 		<div class="panel panel-primary">
 		  <!-- Default panel contents -->
 			<div class="panel-body fixed-panel">
 				<div class="well">
 
-				{% for i in installation %}
-					<li class = "list-group-item">{{i}}
+				{% for j in bodyClasses[i]['metadata'] %}
+					<li class = "list-group-item">
+						<p>{{j['excerpt']}}</p>
 						<div class="custom-control custom-checkbox">
 						    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
 						    <label class="custom-control-label" for="defaultUnchecked"></label>
@@ -225,11 +217,12 @@ SM2KG
 				</div>
 			</div>
 		</div>
+	  </div> 
+	  {% endfor %}
 	  </div>
-	  {% endif %}
+<!--
 	  <div id="menu2" class="tab-pane fade">
-		<div class="panel panel-primary">
-		  <!-- Default panel contents -->
+		<div class="panel panel-primary"> 
 				<div class="panel-body fixed-panel">
 					<div class="well">
 					{% for i in invocation %}
@@ -245,8 +238,7 @@ SM2KG
 		</div>
 	  </div>
 	    <div id="menu3" class="tab-pane fade">
-		<div class="panel panel-primary">
-		  <!-- Default panel contents -->
+		<div class="panel panel-primary">	
 		  <div class="panel-body fixed-panel" >
 			<div class="well">
 			    {% for i in citation %}
@@ -262,6 +254,7 @@ SM2KG
 		</div>
 	</div>
 </div>
+-->
 {% endif %}
 
 </div>
