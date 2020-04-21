@@ -9,10 +9,8 @@ Installation Instructions:
   Follow the instructions here if you don't: https://wiki.python.org/moin/BeginnersGuide/Download
   
 2nd) 
-  Download the somef library as describered here: https://github.com/KnowledgeCaptureAndDiscovery/somef/tree/cli
-  ```
-  pip3 install -r requirements.txt
-  ```
+  Download the somef library as described here: https://github.com/KnowledgeCaptureAndDiscovery/somef/tree/cli
+
 3rd)
   Download the requirements from the requirements.txt
   ```
