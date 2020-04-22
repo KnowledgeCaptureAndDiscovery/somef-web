@@ -160,11 +160,11 @@ SM2KG
 
 
 {% if showDownload %}
-
+<!-- displays metadata body button links -->
 		<ul class="nav nav-pills gitdata">
 		  {% for i in range(bodyClasses| length) %}
 		    {% if (i == 0) %} 
-		    <li><a data-toggle="tab" href="#home">{{bodyClasses[i]['className']}}</a></li>
+		    <li class="active"><a data-toggle="tab" href="#home">{{bodyClasses[i]['className']}}</a></li>
 		    {% else %}
 		    <li><a data-toggle="tab" href="#menu{{i + 1}}">{{bodyClasses[i]['className']}}</a></li>
 		    {% endif %}
@@ -172,35 +172,7 @@ SM2KG
 		  <!-- <li><a data-toggle="tab" href="#menu4">Download</a></li>	-->
 		</ul>
 
-<!--
-
-	<div class="tab-content">
-	  <div id="home" class="tab-pane fade in active">
-		<div class="panel panel-primary">
-				<div class="panel-body fixed-panel">
-					<div class="well">
-					{% set color_ns = namespace(color='block_color_one') %}
-					{% for i in description %}
-						<p class = '{{ color_ns.color }}'> {{ i }} </p>
-						{% if color_ns.color == 'block_color_two' %}
-							{% set color_ns.color = 'block_color_one' %}
-						{% elif color_ns.color == 'block_color_one' %}
-							{% set color_ns.color = 'block_color_two' %}
-						{% endif %}
-
-						<li class = "list-group-item">{{i}}
-							<div class="custom-control custom-checkbox">
-							    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
-							    <label class="custom-control-label" for="defaultUnchecked"></label>
-							</div>
-						</li>
-
-					{% endfor %}
-				</div>
-			</div>
-		</div>
-	  </div>
--->
+<!-- displays metadata body content -->
 	  <div class="tab-content">
 	  {% for i in range(bodyClasses| length) %}
 	  	{% if (i == 0) %}
@@ -212,7 +184,7 @@ SM2KG
 		  <!-- Default panel contents -->
 			<div class="panel-body fixed-panel">
 				<div class="well">
-
+				{% if ((bodyClasses[i]['metadata']| length) > 0) %}
 				{% for j in bodyClasses[i]['metadata'] %}
 					<li class = "list-group-item">
 						<p>{{j['excerpt']}}</p>
@@ -222,47 +194,13 @@ SM2KG
 						</div>
 					</li>
 				{% endfor %}
+				{% endif %}
 				</div>
 			</div>
 		</div>
 	  </div> 
 	  {% endfor %}
 	  </div>
-<!--
-	  <div id="menu2" class="tab-pane fade">
-		<div class="panel panel-primary"> 
-				<div class="panel-body fixed-panel">
-					<div class="well">
-					{% for i in invocation %}
-						<li class = "list-group-item">{{i}}
-							<div class="custom-control custom-checkbox">
-							    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
-							    <label class="custom-control-label" for="defaultUnchecked"></label>
-							</div>
-						</li>
-					{% endfor %}
-					</div>
-			  </div>
-		</div>
-	  </div>
-	    <div id="menu3" class="tab-pane fade">
-		<div class="panel panel-primary">	
-		  <div class="panel-body fixed-panel" >
-			<div class="well">
-			    {% for i in citation %}
-					<li class = "list-group-item">{{i}}
-						<div class="custom-control custom-checkbox">
-						    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
-						    <label class="custom-control-label" for="defaultUnchecked"></label>
-						</div>
-					</li>
-			    {% endfor %}
-			</div>
-		  </div>
-		</div>
-	</div>
-</div>
--->
 {% endif %}
 
 </div>
