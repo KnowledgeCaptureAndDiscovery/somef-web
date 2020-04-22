@@ -42,6 +42,12 @@ body{
   font-size: 14px;
   text-align: center;
 }
+.gitdata-headerbody{
+	position: relative;
+	width: 50%; 
+
+	
+}
 
 .gitdata-fetchdata{
 	position: relative;
