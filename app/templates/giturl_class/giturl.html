@@ -3,6 +3,9 @@
 
 <!DOCTYPE html>
 <html>
+
+
+
 {% block title %}
 SM2KG
 {% endblock %}
@@ -16,6 +19,20 @@ SM2KG
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
 {% endblock %}
 
+
+<!--for some reason javascript wants to only work here, not above; should look into it-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+	url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
+<!--Scrolls down when metadata file generated and shown-->
+<script type=text/javascript>
+	if("{{ showDownload }}" == "True"){
+		$("html, body").animate({
+			scrollTop: $('html, body').get(0).scrollHeight
+		}, 2000);
+	}
+</script>
 
 
 <nav class="navbar navbar-default navbar-expand-lg navheader">
@@ -56,7 +73,7 @@ SM2KG
 			<div class = "row">
 				<div class="col-sm-10 no padding">
 					<div class = form-group>
-						{{ wtf.form_field(form.giturl, extra_classes=test, placeholder='Enter Github URL') }}
+						{{ wtf.form_field(form.giturl, extra_classes=test, placeholder='Enter Github URL: e.g. https://github.com/spotify/backstage') }}
 					</div>
 				</div>
 				<div class="col-sm-2 nopadding">
@@ -111,7 +128,7 @@ SM2KG
 	{% include 'giturl_class/intro_text.html' %}
 {% endif %}
 {% if showDownload %}
-<div class="panel panel-default">
+<div class="panel panel-default gitdata-headerbody">
   <div class="panel-body">
 
 	<!-- display git name -->
